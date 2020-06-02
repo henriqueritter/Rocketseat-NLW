@@ -8,5 +8,8 @@ module.exports = {
   migrations: {
     directory: path.resolve(__dirname, 'src', 'database', 'migrations')
   },
+  seeds: {
+    directory: path.resolve(__dirname, 'src', 'database', 'seeds')
+  }, //seeds utilizado para carregar os itens default no banco para cada point
   useNullAsDefault: true
 };
