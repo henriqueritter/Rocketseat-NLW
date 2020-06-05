@@ -1,5 +1,5 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
-import {Link} from 'react-router-dom';
+import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import {Link, useHistory} from 'react-router-dom';
 import { FiArrowLeft} from 'react-icons/fi';
 import { Map, TileLayer, Marker} from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
@@ -32,11 +32,21 @@ const CreatePoint = () => {
   const [selectedUf, setSelectedUf] = useState('0'); //armazena uf selecionada pelo usuario
   const [selectedCity, setSelectedCity] = useState('0');
 
+  //armazena os itens de cada point
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    whatsapp: ''
+  });
   // carrega o mapa na geo localizacao do computador que abriu
   const [initialPosition, setInicialPosition] = useState<[number,number]>([0, 0]);
 
   //seleciona uma posicao do marcador no mapa
   const [selectedPosition, setSelectedPosition] = useState<[number,number]>([0, 0]);
+
+  const history=useHistory();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => {
@@ -92,6 +102,49 @@ const CreatePoint = () => {
     ])
   }
 
+
+  //armazena os inputs do usuario
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>){
+    const {name, value} = event.target;
+    //Altera cada propriedade do formulario correspondente a id sendo editada no form
+    setFormData({ ...formData, [name]: value});
+  }
+
+  //seleciona ou remove a seleção dos itens
+  function handleSelectItem(id: number){
+    const alreadySelected = selectedItems.findIndex(item => item === id);
+
+    if (alreadySelected >= 0 ){
+      const filteredItems = selectedItems.filter(item => item !== id);
+      setSelectedItems(filteredItems);
+    } else {
+      setSelectedItems([...selectedItems, id]);
+    }
+  }
+
+  //funcao disparada pelo form
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault(); //impede da pagina recarregar
+
+    const { name, email, whatsapp } = formData;
+    const uf = selectedUf;
+    const city = selectedCity;
+    const [ latitude, longitude ] = selectedPosition;
+    const items = selectedItems;
+
+
+    const data = {
+      name, email, whatsapp, 
+      uf, city, latitude, longitude, 
+      items
+    }
+    await api.post('points', data);
+
+    alert('Ponto de coleta cadastrado');
+
+    history.push('/');
+  }
+
   return (
     <div id="page-create-point">
       <header>
@@ -102,7 +155,7 @@ const CreatePoint = () => {
         </Link>
       </header>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <h1>Cadastro do <br /> Ponto de Coleta</h1>
 
         <fieldset>
@@ -116,6 +169,7 @@ const CreatePoint = () => {
               type="text"
               name="name"
               id="name"
+              onChange={handleInputChange}
             />
           </div>
 
@@ -126,6 +180,7 @@ const CreatePoint = () => {
               type="text"
               name="email"
               id="email"
+              onChange={handleInputChange}
             />
           </div>
           <div className="field">
@@ -134,6 +189,7 @@ const CreatePoint = () => {
               type="text"
               name="whatsapp"
               id="whatsapp"
+              onChange={handleInputChange}
             />
           </div>
           </div>
@@ -184,7 +240,10 @@ const CreatePoint = () => {
           <ul className="items-grid">
             {items.map(item=>{
               return (
-                <li key={item.id}>
+                <li key={item.id} 
+                    onClick={() => handleSelectItem(item.id)}
+                    className={selectedItems.includes(item.id) ? 'selected': ''} 
+                >
                   <img src={item.image_url} alt="Teste"/>
                   <span>{item.title}</span>
                 </li>
