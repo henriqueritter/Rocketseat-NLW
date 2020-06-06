@@ -8,9 +8,7 @@ class PointsController {
     //divide o query param ITEMS removendo os espaços e separando pelas virgulas
     const parsedItems = String(items)
       .split(',')
-      .map(item => 
-        Number(item.trim())
-      );
+      .map((item) => Number(item.trim()));
 
       //faz um join nas tabelas points e point_items onde o id do points seja igual ao point_id da tabela point_items
       //whereIn procura onde o campo item_id da tabela point_items contenha algum dos items passados na variavel parsedItems
@@ -24,7 +22,7 @@ class PointsController {
         .where('uf', String(uf))
         .distinct()
         .select('points.*');
-        
+        // console.log('show points');
       return response.json(points);
   }
 
@@ -43,7 +41,18 @@ class PointsController {
 
     return response.json({point,items});
   }
+  async delete(request: Request, response: Response){
+    const {id} = request.params;
 
+    const trx = await knex.transaction();
+    const deletedPointItems = await trx('point_items').delete('*').where('point_id', id);
+    const deletedPoint = await trx('points').delete('*').where('id', id);
+
+    await trx.commit();
+
+    return response.json(`Deleted ${id}`);
+    
+  }
   async create(request: Request, response: Response) {
     const { 
       name,
