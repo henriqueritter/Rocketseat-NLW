@@ -9,3 +9,4 @@ Projeto de uma semana onde será construído o Back-end / Front-end e Mobile de 
 # TO-DO
 * Criar Starter Page
 * Add modal após criar ponto de coleta
+* Add UF, City Select na tela mobile
