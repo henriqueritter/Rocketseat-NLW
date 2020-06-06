@@ -63,7 +63,7 @@ const Home = () => {
             </Text>
           </RectButton>
         </View>
-
+        
       </ImageBackground>
     </KeyboardAvoidingView>
   )

@@ -10,7 +10,7 @@ import Constants from 'expo-constants';
 
 interface Params {
   point_id: number;
-}
+};
 
 interface Data {
   point: {
