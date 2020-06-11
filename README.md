@@ -7,4 +7,4 @@ Projeto de uma semana onde será construído o Back-end / Front-end e Mobile de 
 
 
 ## Link do projeto no Heroku abaixo:
-[a link](https://nlw-hrqritter.herokuapp.com)
+[Ecoleta - Heroku](https://nlw-hrqritter.herokuapp.com)
