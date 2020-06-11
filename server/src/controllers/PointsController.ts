@@ -39,7 +39,7 @@ class PointsController {
       const serializedPoints = points.map(point => {
         return {
           ...point,
-          image_url: `http://192.168.11.105:3333/uploads/${point.image}`
+          image_url: `https://nlw-server-hrqritter.herokuapp.com/uploads/${point.image}`
         };
       });
 
@@ -57,7 +57,7 @@ class PointsController {
 
     const serializedPoint =  {
       ...point,
-      image_url: `http://192.168.11.105:3333/uploads/${point.image}`
+      image_url: `https://nlw-server-hrqritter.herokuapp.com/uploads/${point.image}`
     };
 
     const items = await knex('items')
