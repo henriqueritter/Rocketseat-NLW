@@ -2,6 +2,18 @@ import {Request, Response} from 'express';
 import knex from '../database/connection';
 
 class PointsController {
+  async list(request: Request, response: Response){
+    const points = await knex('points').select('*');
+
+    const serializedPoints = points.map(point => {
+      return {
+        ...point, 
+        image_url: `https://nlw-server-hrqritter.herokuapp.com/uploads/${point.image}`
+      };
+    })
+      return response.json(serializedPoints);
+  }
+  /*
   async index(request: Request, response: Response){
     const {city,uf,items} = request.query;
 
@@ -33,7 +45,7 @@ class PointsController {
 
       return response.json(serializedPoints);
   }
-
+*/
   async show(request: Request, response: Response){
     const { id } = request.params;
 
